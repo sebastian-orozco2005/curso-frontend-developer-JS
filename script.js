@@ -1,40 +1,3 @@
-const menu_mail_button = document.querySelector(".navbar-email");
-const menu_unfolded = document.querySelector(".desktop-menu");
-const menu_mobile_button = document.querySelector(".menu");
-const menu_mobile = document.querySelector(".mobile-menu");
-const menu_carrito_button = document.querySelector(".navbar-shopping-cart");
-const menu_carrito = document.querySelector(".product-detail")
-
-menu_mail_button.addEventListener('click',function(){showContainer(menu_unfolded)});
-menu_mobile_button.addEventListener('click',function(){showContainer(menu_mobile)});
-menu_carrito_button.addEventListener('click',function(){showContainer(menu_carrito)});
-
-elements_showed = [];
-
-function showContainer(container){
-    console.log("executed");
-    elements_showed.forEach(element_showed => {
-        if(element_showed.classList[0] == container.classList[0]){
-            //No hacer nada si valida esto
-        }else{
-            element_showed.classList.add('inactive')
-        }
-    });
-    container.classList.toggle('inactive'); //El metodo toogle si esta clase la quita y si no esta la pone
-
-    if(!container.classList.contains('inactive')){
-        elements_showed.push(container);
-    }
-    console.log(elements_showed);
-    //Manera mas larga de realizar el mismpo proceso que hace el metodo toogle
-    
-    // if(menu_unfolded.classList.contains('inactive')){
-    //     menu_unfolded.classList.remove('inactive');
-    // }else{
-    //     menu_unfolded.classList.add('inactive')
-    // }
-}
-
 const product_list = []
 
 product_list.push ({
@@ -83,24 +46,111 @@ product_list.push ({
     image: 'https://m.media-amazon.com/images/I/81k2Gmal+VL._AC_SL1500_.jpg'
 }); 
 
-product_list.forEach(product => {
-    
-    const htmlCards = `
-    <div class="product-card">
-    <img src="${product.image}" alt="">
-    <div class="product-info">
-      <div>
-        <p>$${product.price}</p>
-        <p>${product.name}</p>
-      </div>
-      <figure>
-        <img src="./icons/bt_add_to_cart.svg" alt="">
-      </figure>
-    </div>
-    </div>
-    `;
+getProducts(product_list);
 
-    const cardsContainer = document.querySelector(".cards-container");
-    cardsContainer.innerHTML += htmlCards;
-});
+const menu_mail_button = document.querySelector(".navbar-email");
+const menu_unfolded = document.querySelector(".desktop-menu");
+const menu_mobile_button = document.querySelector(".menu");
+const menu_mobile = document.querySelector(".mobile-menu");
+const menu_carrito_button = document.querySelector(".navbar-shopping-cart");
+const menu_carrito = document.querySelector(".product-detail");
+const product_detail_buttons = document.querySelectorAll(".product-card");
+const product_detail_item = document.querySelector(".product-detail-item");
+
+product_detail_buttons.forEach(function(boton){
+    boton.addEventListener('click',function(){showContainer(boton)})
+})
+
+menu_mail_button.addEventListener('click',function(){showContainer(menu_unfolded)});
+menu_mobile_button.addEventListener('click',function(){showContainer(menu_mobile)});
+menu_carrito_button.addEventListener('click',function(){showContainer(menu_carrito)});
+
+
+
+elements_showed = [];
+
+function showContainer(container){
+    if(!container.classList.contains('product-card')){
+        console.log("executed");
+        elements_showed.forEach(element_showed => {
+            if(element_showed.classList[0] == container.classList[0]){
+                //No hacer nada si valida esto
+            }else{
+                element_showed.classList.add('inactive')
+            }
+        });
+        container.classList.toggle('inactive'); //El metodo toogle si esta clase la quita y si no esta la pone
+
+        if(!container.classList.contains('inactive')){
+            elements_showed.push(container);
+        }
+    }else{
+        img_element = container.querySelector("img")
+        img = img_element.getAttribute('src')
+        price_element = container.querySelector(".price-item")
+        price = price_element.textContent;
+        name_element = container.querySelector(".name-item")
+        name_item = name_element.textContent;
+        const itemDetail = `
+        <aside class="product-detail-item inactive">
+        <div class="product-detail-item-close">
+            <img src="./icons/icon_close.png" alt="close">
+        </div>
+        <img src="${img}" alt="bike">
+        <div class="product-info-item">
+        <p>${price}</p>
+        <p>${name_item}</p>
+        <p>With its practical position, this bike also fulfills a decorative function, add your hall or workspace.</p>
+        <button class="primary-button add-to-cart-button">
+          <img src="./icons/bt_add_to_cart.svg" alt="add to cart">
+          Add to cart
+        </button>
+        </div>
+        </aside>
+        `;
+        const body = document.querySelector("body");
+        body.innerHTML += itemDetail;
+        const new_detail_item = document.querySelector(".product-detail-item")
+        if(new_detail_item){
+            new_detail_item.classList.toggle('inactive');
+            if(!new_detail_item.classList.contains('inactive')){
+                elements_showed.push(container);
+            }
+            const button_close_item = document.querySelector(".product-detail-item-close");
+            button_close_item.addEventListener('click',function(){new_detail_item.classList.toggle('inactive'); location.reload()})
+            menu_mail_button.addEventListener('click',function(){showContainer(menu_unfolded)});
+            menu_mobile_button.addEventListener('click',function(){showContainer(menu_mobile)});
+            menu_carrito_button.addEventListener('click',function(){showContainer(menu_carrito)});
+        }else{
+            
+        }
+        console.log(elements_showed);
+
+    }
+}
+
+
+
+function getProducts(array){
+    array.forEach(product => {
+        
+        const htmlCards = `
+        <div class="product-card">
+        <img src="${product.image}" alt="">
+        <div class="product-info">
+        <div>
+            <p class="price-item">$${product.price}</p>
+            <p class="name-item">${product.name}</p>
+        </div>
+        <figure>
+            <img src="./icons/bt_add_to_cart.svg" alt="">
+        </figure>
+        </div>
+        </div>
+        `;
+
+        const cardsContainer = document.querySelector(".cards-container");
+        cardsContainer.innerHTML += htmlCards;
+    });
+}    
 
